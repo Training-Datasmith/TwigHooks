@@ -82,7 +82,7 @@ abstract class ContainerTestCase extends TestCase
     {
         $container = new ContainerBuilder();
 
-        $container->addCompilerPass(new class() implements CompilerPassInterface {
+        $container->addCompilerPass(new class () implements CompilerPassInterface {
             public function process(ContainerBuilder $container): void
             {
                 foreach ($container->getDefinitions() as $definition) {

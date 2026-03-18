@@ -14,8 +14,6 @@ declare(strict_types=1);
 namespace Sylius\TwigHooks\Profiler;
 
 use Sylius\TwigHooks\Profiler\Dumper\HtmlDumper;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
 use Twig\Markup;
