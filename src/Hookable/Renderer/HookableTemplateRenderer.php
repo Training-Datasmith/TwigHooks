@@ -37,7 +37,7 @@ final class HookableTemplateRenderer implements SupportableHookableRendererInter
     {
         if (!$this->supports($hookable)) {
             throw new \InvalidArgumentException(
-                sprintf('Hookable must be the "%s", but "%s" given.', HookableTemplate::class, get_class($hookable)),
+                sprintf('Hookable must be the "%s", but "%s" given.', HookableTemplate::class, $hookable::class),
             );
         }
 
@@ -48,8 +48,6 @@ final class HookableTemplateRenderer implements SupportableHookableRendererInter
             return $this->twig->render($hookable->template, [
                 HooksRuntime::HOOKABLE_METADATA => $metadata,
             ]);
-        } catch (HookRenderException $exception) {
-            throw $exception;
         } catch (\Throwable $exception) {
             throw new HookRenderException(
                 sprintf(

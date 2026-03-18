@@ -91,7 +91,7 @@ final class HooksRuntime implements RuntimeExtensionInterface
         bool $only = false,
     ): string {
         $hookNames = is_string($hookNames) ? [$hookNames] : $hookNames;
-        $hookNames = array_map([$this->nameNormalizer, 'normalize'], $hookNames);
+        $hookNames = array_map($this->nameNormalizer->normalize(...), $hookNames);
 
         $hookableMetadata = $twigVars[self::HOOKABLE_METADATA] ?? null;
         Assert::nullOrIsInstanceOf($hookableMetadata, HookableMetadata::class);
@@ -133,9 +133,7 @@ final class HooksRuntime implements RuntimeExtensionInterface
             $prefixes = $hookContext['_prefixes'];
         }
 
-        $prefixes = array_map([$this->prefixNormalizer, 'normalize'], $prefixes);
-
-        return $prefixes;
+        return array_map($this->prefixNormalizer->normalize(...), $prefixes);
     }
 
     /**

@@ -27,7 +27,7 @@ final class HookableMerger implements HookableMergerInterface
         }
 
         /** @var class-string<AbstractHookable> $class */
-        $class = get_class(end($hookables));
+        $class = end($hookables)::class;
 
         $serializedHookables = array_map(
             static fn (AbstractHookable $hookable): array => $hookable->toArray(),

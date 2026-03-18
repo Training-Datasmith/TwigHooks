@@ -23,7 +23,7 @@ final class DataBagHydrationExtension implements HydrationExtensionInterface
         return is_a($className, DataBagInterface::class, true);
     }
 
-    public function hydrate(mixed $value, string $className): ?object
+    public function hydrate(mixed $value, string $className): object
     {
         return new $className($value);
     }

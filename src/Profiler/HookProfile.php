@@ -23,9 +23,9 @@ class HookProfile
      * @param array<HookableProfile> $hookablesProfiles
      */
     public function __construct(
-        private array $hooksNames,
+        private readonly array $hooksNames,
         private array $hookablesProfiles,
-        private ?self $parent = null,
+        private readonly ?self $parent = null,
     ) {
     }
 

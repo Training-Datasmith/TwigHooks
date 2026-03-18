@@ -28,10 +28,6 @@ final class HooksDataCollector extends DataCollector implements LateDataCollecto
     ) {
     }
 
-    public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
-    {
-    }
-
     public function getName(): string
     {
         return 'sylius_twig_hooks';

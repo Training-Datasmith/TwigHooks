@@ -29,7 +29,7 @@ final class HookNode extends Node
         int $lineno,
     ) {
         if (\func_num_args() > 4) {
-            trigger_deprecation('sylius/twig-hooks', '0.11.0', \sprintf('The "tag" constructor argument of the "%s" class is deprecated and ignored (check which TokenParser class set it to "%s"), the tag is now automatically set by the Parser when needed.', static::class, func_get_arg(4) ?: 'null'));
+            trigger_deprecation('sylius/twig-hooks', '0.11.0', \sprintf('The "tag" constructor argument of the "%s" class is deprecated and ignored (check which TokenParser class set it to "%s"), the tag is now automatically set by the Parser when needed.', self::class, func_get_arg(4) ?: 'null'));
         }
 
         // Remove when twig < 3.12 support is dropped

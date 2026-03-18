@@ -21,7 +21,7 @@ use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 final class ComponentPropsProvider implements PropsProviderInterface
 {
     public function __construct(
-        private ExpressionLanguage $expressionLanguage,
+        private readonly ExpressionLanguage $expressionLanguage,
     ) {
     }
 

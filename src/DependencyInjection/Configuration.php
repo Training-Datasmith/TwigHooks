@@ -68,7 +68,7 @@ final class Configuration implements ConfigurationInterface
                         ->useAttributeAsKey('_name')
                         ->arrayPrototype()
                             ->beforeNormalization()
-                                ->always(function ($v) {
+                                ->always(function (array $v): array {
                                     $isComponentDefined = isset($v['component']);
                                     $isTemplateDefined = isset($v['template']);
                                     $isDisabled = isset($v['enabled']) && $v['enabled'] === false;
@@ -88,7 +88,7 @@ final class Configuration implements ConfigurationInterface
                                 })
                             ->end()
                             ->validate()
-                                ->always(static function ($v) {
+                                ->always(static function (array $v): array {
                                     $component = $v['component'] ?? null;
                                     $template = $v['template'] ?? null;
                                     $enabled = $v['enabled'] ?? true;

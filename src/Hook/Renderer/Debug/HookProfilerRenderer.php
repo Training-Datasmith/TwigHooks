@@ -20,9 +20,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 final class HookProfilerRenderer implements HookRendererInterface
 {
     public function __construct(
-        private HookRendererInterface $innerRenderer,
-        private ?Profile $profile,
-        private ?Stopwatch $stopwatch,
+        private readonly HookRendererInterface $innerRenderer,
+        private readonly ?Profile $profile,
+        private readonly ?Stopwatch $stopwatch,
     ) {
     }
 

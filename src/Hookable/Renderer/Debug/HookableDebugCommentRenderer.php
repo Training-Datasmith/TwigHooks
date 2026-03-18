@@ -46,7 +46,7 @@ final class HookableDebugCommentRenderer implements HookableRendererInterface, D
 
     private function getDebugComment(AbstractHookable $hookable, HookableMetadata $metadata, string $format): string
     {
-        [$targetName, $targetValue] = match (get_class($hookable)) {
+        [$targetName, $targetValue] = match ($hookable::class) {
             HookableTemplate::class => ['template', $hookable->template],
             HookableComponent::class => ['component', $hookable->component],
             default => throw new \InvalidArgumentException('Unsupported hookable type.'),

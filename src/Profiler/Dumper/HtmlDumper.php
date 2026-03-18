@@ -60,10 +60,10 @@ final class HtmlDumper
 
     private function dumpHookableProfile(HookableProfile $hookableProfile, string $prefix = '', bool $sibling = false): string
     {
-        $targetName = match (get_class($hookableProfile->getHookable())) {
+        $targetName = match ($hookableProfile->getHookable()::class) {
             HookableTemplate::class => 'Template',
             HookableComponent::class => 'Component',
-            default => throw new \InvalidArgumentException(sprintf('Unsupported hookable type %s', get_class($hookableProfile->getHookable()))),
+            default => throw new \InvalidArgumentException(sprintf('Unsupported hookable type %s', $hookableProfile->getHookable()::class)),
         };
 
         $str = sprintf(
@@ -89,10 +89,10 @@ final class HtmlDumper
 
     private function getTargetValue(AbstractHookable $hookable): string
     {
-        return match (get_class($hookable)) {
+        return match ($hookable::class) {
             HookableTemplate::class => $hookable->template,
             HookableComponent::class => $hookable->component,
-            default => throw new \InvalidArgumentException(sprintf('Unsupported hookable type %s', get_class($hookable))),
+            default => throw new \InvalidArgumentException(sprintf('Unsupported hookable type %s', $hookable::class)),
         };
     }
 }

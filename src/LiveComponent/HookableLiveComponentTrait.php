@@ -26,7 +26,7 @@ trait HookableLiveComponentTrait
     #[ExposeInTemplate('hookable_metadata')]
     public ?HookableMetadata $hookableMetadata = null;
 
-    public function hydrateHookableMetadata($data): ?HookableMetadata
+    public function hydrateHookableMetadata(array $data): ?HookableMetadata
     {
         if (null === $data) {
             return null;
@@ -35,7 +35,7 @@ trait HookableLiveComponentTrait
         return new HookableMetadata(
             new HookMetadata($data['renderedBy'], new DataBag()),
             new DataBag(),
-            new ScalarDataBag(json_decode($data['configuration'], true)),
+            new ScalarDataBag(json_decode((string) $data['configuration'], true)),
             $data['prefixes'] ?? [],
         );
     }

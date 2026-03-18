@@ -31,7 +31,7 @@ final class HookableMetadataFactory implements HookableMetadataFactoryInterface
         ScalarDataBagInterface $configuration,
         array $prefixes = [],
     ): HookableMetadata {
-        $prefixes = array_map([$this->prefixNormalizer, 'normalize'], $prefixes);
+        $prefixes = array_map($this->prefixNormalizer->normalize(...), $prefixes);
 
         return new HookableMetadata($hookMetadata, $context, $configuration, $prefixes);
     }

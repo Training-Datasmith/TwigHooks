@@ -39,7 +39,7 @@ final class HookableComponentRenderer implements SupportableHookableRendererInte
     {
         if (!$this->supports($hookable)) {
             throw new \InvalidArgumentException(
-                sprintf('Hookable must be the "%s", but "%s" given.', HookableComponent::class, get_class($hookable)),
+                sprintf('Hookable must be the "%s", but "%s" given.', HookableComponent::class, $hookable::class),
             );
         }
 
