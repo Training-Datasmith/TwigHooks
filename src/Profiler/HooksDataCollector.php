@@ -38,7 +38,7 @@ final class HooksDataCollector extends DataCollector implements LateDataCollecto
 
     private function getProfile(): Profile
     {
-        return $this->profile ??= unserialize($this->data['profile']);
+        return $this->profile ??= unserialize($this->data['profile'], ['allowed_classes' => [Profile::class]]);
     }
 
     public function getTotalDuration(): string
