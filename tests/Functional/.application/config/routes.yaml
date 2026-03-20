@@ -1,6 +1,6 @@
 #index:
 #    path: /
-#    controller: App\Controller\DefaultController::index
+#    controller: App\Controller\Default_Controller::index
 
 live_component:
     resource: '@LiveComponentBundle/config/routes.php'
