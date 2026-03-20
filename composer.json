@@ -45,13 +45,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Sylius\\TwigHooks\\": "src/"
+            "Sylius\\Twig_Hooks\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "TestApplication\\Sylius\\TwigHooks\\": "tests/Functional/.application/src/",
-            "Tests\\Sylius\\TwigHooks\\": "tests/"
+            "Test_Application\\Sylius\\Twig_Hooks\\": "tests/Functional/.application/src/",
+            "Tests\\Sylius\\Twig_Hooks\\": "tests/"
         }
     },
     "config": {
