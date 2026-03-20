@@ -8,18 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Metadata;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Metadata;
-
-use Sylius\TwigHooks\Bag\DataBagInterface;
-
-class HookMetadata
+use Sylius\Twig_Hooks\Bag\Data_Bag_Interface;
+class Hook_Metadata
 {
-    public function __construct(
-        public readonly string $name,
-        public readonly DataBagInterface $context,
-    ) {
+    public function __construct(public readonly string $name, public readonly Data_Bag_Interface $context)
+    {
     }
 }

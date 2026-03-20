@@ -8,16 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Renderer;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Renderer;
-
-interface HookRendererInterface
+interface Hook_Renderer_Interface
 {
     /**
      * @param array<string> $hookNames
      * @param array<string, mixed> $hookContext
      */
-    public function render(array $hookNames, array $hookContext = []): string;
+    public function render(array $hook_names, array $hook_context = []): string;
 }

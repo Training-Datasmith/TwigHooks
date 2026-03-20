@@ -8,37 +8,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hookable\Renderer\Debug;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hookable\Renderer\Debug;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-use Sylius\TwigHooks\Hookable\Renderer\HookableRendererInterface;
-use Sylius\TwigHooks\Profiler\Profile;
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+use Sylius\Twig_Hooks\Hookable\Renderer\Hookable_Renderer_Interface;
+use Sylius\Twig_Hooks\Profiler\Profile;
 use Symfony\Component\Stopwatch\Stopwatch;
-
-final class HookableProfilerRenderer implements HookableRendererInterface
+final class Hookable_Profiler_Renderer implements Hookable_Renderer_Interface
 {
-    public function __construct(
-        private readonly HookableRendererInterface $innerRenderer,
-        private readonly ?Profile $profile,
-        private readonly ?Stopwatch $stopwatch,
-    ) {
-    }
-
-    public function render(AbstractHookable $hookable, HookableMetadata $metadata): string
+    public function __construct(private readonly Hookable_Renderer_Interface $inner_renderer, private readonly ?Profile $profile, private readonly ?Stopwatch $stopwatch)
     {
-        $this->profile?->registerHookableRenderStart($hookable);
+    }
+    public function render(Abstract_Hookable $hookable, Hookable_Metadata $metadata): string
+    {
+        $this->profile?->register_hookable_render_start($hookable);
         $this->stopwatch?->start($hookable->id);
-
-        $rendered = $this->innerRenderer->render($hookable, $metadata);
-
-        $this->profile?->registerHookableRenderEnd(
-            $this->stopwatch?->stop($hookable->id)->getDuration(),
-        );
-
+        $rendered = $this->inner_renderer->render($hookable, $metadata);
+        $this->profile?->register_hookable_render_end($this->stopwatch?->stop($hookable->id)->get_duration());
         return $rendered;
     }
 }

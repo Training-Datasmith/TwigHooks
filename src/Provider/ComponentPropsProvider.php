@@ -8,66 +8,43 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Provider;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Provider;
-
-use Sylius\TwigHooks\Hookable\HookableComponent;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-use Sylius\TwigHooks\Provider\Exception\InvalidExpressionException;
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-
-final class ComponentPropsProvider implements PropsProviderInterface
+use Sylius\Twig_Hooks\Hookable\Hookable_Component;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+use Sylius\Twig_Hooks\Provider\Exception\Invalid_Expression_Exception;
+use Symfony\Component\Expression_Language\Expression_Language;
+final class Component_Props_Provider implements Props_Provider_Interface
 {
-    public function __construct(
-        private readonly ExpressionLanguage $expressionLanguage,
-    ) {
-    }
-
-    public function provide(HookableComponent $hookable, HookableMetadata $metadata): array
+    public function __construct(private readonly Expression_Language $expression_language)
     {
-        $values = [
-            '_context' => $metadata->context,
-            '_configuration' => $metadata->configuration,
-        ];
-
-        return $this->mapArrayRecursively(function (mixed $value) use ($values, $hookable): mixed {
+    }
+    public function provide(Hookable_Component $hookable, Hookable_Metadata $metadata): array
+    {
+        $values = ['_context' => $metadata->context, '_configuration' => $metadata->configuration];
+        return $this->map_array_recursively(function (mixed $value) use ($values, $hookable): mixed {
             if (is_string($value) && str_starts_with($value, '@=')) {
                 try {
-                    return $this->expressionLanguage->evaluate(substr($value, 2), $values);
+                    return $this->expression_language->evaluate(substr($value, 2), $values);
                 } catch (\Throwable $e) {
-                    throw new InvalidExpressionException(
-                        sprintf(
-                            'Failed to evaluate the "%s" expression while rendering the "%s" hookable in the "%s" hook. Error: %s".',
-                            $value,
-                            $hookable->name,
-                            $hookable->hookName,
-                            $e->getMessage(),
-                        ),
-                        previous: $e,
-                    );
+                    throw new Invalid_Expression_Exception(sprintf('Failed to evaluate the "%s" expression while rendering the "%s" hookable in the "%s" hook. Error: %s".', $value, $hookable->name, $hookable->hook_name, $e->get_message()), previous: $e);
                 }
             }
-
             return $value;
         }, $hookable->props);
     }
-
     /**
      * @param array<array-key, mixed> $array
      *
      * @return array<array-key, mixed>
      */
-    private function mapArrayRecursively(callable $callback, array $array): array
+    private function map_array_recursively(callable $callback, array $array): array
     {
         $result = [];
         foreach ($array as $key => $value) {
-            $result[$key] = is_array($value)
-                ? $this->mapArrayRecursively($callback, $value)
-                : $callback($value);
+            $result[$key] = is_array($value) ? $this->map_array_recursively($callback, $value) : $callback($value);
         }
-
         return $result;
     }
 }

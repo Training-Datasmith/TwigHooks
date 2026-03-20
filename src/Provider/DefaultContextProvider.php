@@ -8,17 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Provider;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Provider;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-
-final class DefaultContextProvider implements ContextProviderInterface
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+final class Default_Context_Provider implements Context_Provider_Interface
 {
-    public function provide(AbstractHookable $hookable, array $hookContext): array
+    public function provide(Abstract_Hookable $hookable, array $hook_context): array
     {
-        return array_merge($hookContext, $hookable->context);
+        return array_merge($hook_context, $hookable->context);
     }
 }

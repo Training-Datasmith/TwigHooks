@@ -8,148 +8,116 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Twig\Runtime;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Twig\Runtime;
-
-use Sylius\TwigHooks\Bag\DataBagInterface;
-use Sylius\TwigHooks\Bag\ScalarDataBagInterface;
-use Sylius\TwigHooks\Hook\Normalizer\Name\NameNormalizerInterface;
-use Sylius\TwigHooks\Hook\Normalizer\Prefix\PrefixNormalizerInterface;
-use Sylius\TwigHooks\Hook\Renderer\HookRendererInterface;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-use Twig\Error\RuntimeError;
-use Twig\Extension\RuntimeExtensionInterface;
+use Sylius\Twig_Hooks\Bag\Data_Bag_Interface;
+use Sylius\Twig_Hooks\Bag\Scalar_Data_Bag_Interface;
+use Sylius\Twig_Hooks\Hook\Normalizer\Name\Name_Normalizer_Interface;
+use Sylius\Twig_Hooks\Hook\Normalizer\Prefix\Prefix_Normalizer_Interface;
+use Sylius\Twig_Hooks\Hook\Renderer\Hook_Renderer_Interface;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+use Twig\Error\Runtime_Error;
+use Twig\Extension\Runtime_Extension_Interface;
 use Webmozart\Assert\Assert;
-
-final class HooksRuntime implements RuntimeExtensionInterface
+final class Hooks_Runtime implements Runtime_Extension_Interface
 {
     public const HOOKABLE_METADATA = 'hookable_metadata';
-
-    public function __construct(
-        private readonly HookRendererInterface $hookRenderer,
-        private readonly NameNormalizerInterface $nameNormalizer,
-        private readonly PrefixNormalizerInterface $prefixNormalizer,
-        private readonly bool $enableAutoprefixing,
-    ) {
+    public function __construct(private readonly Hook_Renderer_Interface $hook_renderer, private readonly Name_Normalizer_Interface $name_normalizer, private readonly Prefix_Normalizer_Interface $prefix_normalizer, private readonly bool $enable_autoprefixing)
+    {
     }
-
     /**
      * @param array<string, mixed> $context
      *
      * @throws RuntimeError
      */
-    public function getHookableMetadata(array $context): HookableMetadata
+    public function get_hookable_metadata(array $context): Hookable_Metadata
     {
-        $hookableMetadata = $context[self::HOOKABLE_METADATA] ?? null;
-
-        if (!$hookableMetadata instanceof HookableMetadata) {
-            throw new RuntimeError('Trying to access hookable context inside a non-hookable.');
+        $hookable_metadata = $context[self::HOOKABLE_METADATA] ?? null;
+        if (!$hookable_metadata instanceof Hookable_Metadata) {
+            throw new Runtime_Error('Trying to access hookable context inside a non-hookable.');
         }
-
-        return $hookableMetadata;
+        return $hookable_metadata;
     }
-
     /**
      * @param array<string, mixed> $context
      *
      * @throws RuntimeError
      */
-    public function getHookableContext(array $context): DataBagInterface
+    public function get_hookable_context(array $context): Data_Bag_Interface
     {
-        return $this->getHookableMetadata($context)->context;
+        return $this->get_hookable_metadata($context)->context;
     }
-
     /**
      * @param array<string, mixed> $context
      *
      * @throws RuntimeError
      */
-    public function getHookableConfiguration(array $context): ScalarDataBagInterface
+    public function get_hookable_configuration(array $context): Scalar_Data_Bag_Interface
     {
-        return $this->getHookableMetadata($context)->configuration;
+        return $this->get_hookable_metadata($context)->configuration;
     }
-
     /**
      * @param array<string, mixed> $context
      */
-    public function isHookable(array $context): bool
+    public function is_hookable(array $context): bool
     {
-        return array_key_exists(self::HOOKABLE_METADATA, $context) && $context[self::HOOKABLE_METADATA] instanceof HookableMetadata;
+        return array_key_exists(self::HOOKABLE_METADATA, $context) && $context[self::HOOKABLE_METADATA] instanceof Hookable_Metadata;
     }
-
     /**
      * @param string|array<string> $hookNames
      * @param array<string, mixed> $twigVars
      * @param array<string, mixed> $hookContext
      */
-    public function renderHook(
-        string|array $hookNames,
-        array $hookContext = [],
-        array $twigVars = [],
-        bool $only = false,
-    ): string {
-        $hookNames = is_string($hookNames) ? [$hookNames] : $hookNames;
-        $hookNames = array_map($this->nameNormalizer->normalize(...), $hookNames);
-
-        $hookableMetadata = $twigVars[self::HOOKABLE_METADATA] ?? null;
-        Assert::nullOrIsInstanceOf($hookableMetadata, HookableMetadata::class);
-        unset($twigVars[self::HOOKABLE_METADATA]);
-
-        $context = $this->getContext($hookContext, $twigVars, $hookableMetadata, $only);
-        $prefixes = $this->getPrefixes($hookContext, $hookableMetadata);
-
-        if (false === $this->enableAutoprefixing || [] === $prefixes) {
-            return $this->hookRenderer->render($hookNames, $context);
+    public function render_hook(string|array $hook_names, array $hook_context = [], array $twig_vars = [], bool $only = false): string
+    {
+        $hook_names = is_string($hook_names) ? [$hook_names] : $hook_names;
+        $hook_names = array_map($this->name_normalizer->normalize(...), $hook_names);
+        $hookable_metadata = $twig_vars[self::HOOKABLE_METADATA] ?? null;
+        Assert::null_or_is_instance_of($hookable_metadata, Hookable_Metadata::class);
+        unset($twig_vars[self::HOOKABLE_METADATA]);
+        $context = $this->get_context($hook_context, $twig_vars, $hookable_metadata, $only);
+        $prefixes = $this->get_prefixes($hook_context, $hookable_metadata);
+        if (false === $this->enable_autoprefixing || [] === $prefixes) {
+            return $this->hook_renderer->render($hook_names, $context);
         }
-
-        $prefixedHookNames = [];
-
-        foreach ($hookNames as $hookName) {
+        $prefixed_hook_names = [];
+        foreach ($hook_names as $hook_name) {
             foreach ($prefixes as $prefix) {
-                $format = str_starts_with($hookName, '#') ? '%s%s' : '%s.%s';
-                $prefixedHookNames[] = sprintf($format, $prefix, $hookName);
+                $format = str_starts_with($hook_name, '#') ? '%s%s' : '%s.%s';
+                $prefixed_hook_names[] = sprintf($format, $prefix, $hook_name);
             }
         }
-
-        return $this->hookRenderer->render($prefixedHookNames, $context);
+        return $this->hook_renderer->render($prefixed_hook_names, $context);
     }
-
     /**
      * @param array<string, mixed> $hookContext
      *
      * @return array<string>
      */
-    private function getPrefixes(array $hookContext, ?HookableMetadata $hookableMetadata): array
+    private function get_prefixes(array $hook_context, ?Hookable_Metadata $hookable_metadata): array
     {
         $prefixes = [];
-
-        if ($hookableMetadata !== null && $hookableMetadata->hasPrefixes()) {
-            $prefixes = $hookableMetadata->prefixes;
+        if ($hookable_metadata !== null && $hookable_metadata->has_prefixes()) {
+            $prefixes = $hookable_metadata->prefixes;
         }
-
-        if (array_key_exists('_prefixes', $hookContext)) {
-            $prefixes = $hookContext['_prefixes'];
+        if (array_key_exists('_prefixes', $hook_context)) {
+            $prefixes = $hook_context['_prefixes'];
         }
-
-        return array_map($this->prefixNormalizer->normalize(...), $prefixes);
+        return array_map($this->prefix_normalizer->normalize(...), $prefixes);
     }
-
     /**
      * @param array<string, mixed> $hookContext
      * @param array<string, mixed> $twigVars
      *
      * @return array<string, mixed>
      */
-    private function getContext(array $hookContext, array $twigVars, ?HookableMetadata $hookableMetadata, bool $only = false): array
+    private function get_context(array $hook_context, array $twig_vars, ?Hookable_Metadata $hookable_metadata, bool $only = false): array
     {
         if ($only) {
-            return $hookContext;
+            return $hook_context;
         }
-
-        $context = $hookableMetadata?->context->all() ?? [];
-
-        return array_merge($twigVars, $context, $hookContext);
+        $context = $hookable_metadata?->context->all() ?? [];
+        return array_merge($twig_vars, $context, $hook_context);
     }
 }

@@ -8,21 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Provider;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Provider;
-
-use Sylius\TwigHooks\Hookable\HookableTemplate;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-use Sylius\TwigHooks\Provider\Exception\InvalidExpressionException;
-
-interface TemplateConfigurationProviderInterface
+use Sylius\Twig_Hooks\Hookable\Hookable_Template;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+use Sylius\Twig_Hooks\Provider\Exception\Invalid_Expression_Exception;
+interface Template_Configuration_Provider_Interface
 {
     /**
      * @throws InvalidExpressionException
      *
      * @return array<string, mixed>
      */
-    public function provide(HookableTemplate $hookable, HookableMetadata $metadata): array;
+    public function provide(Hookable_Template $hookable, Hookable_Metadata $metadata): array;
 }

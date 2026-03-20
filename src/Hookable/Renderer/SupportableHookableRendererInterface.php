@@ -8,14 +8,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hookable\Renderer;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hookable\Renderer;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-
-interface SupportableHookableRendererInterface extends HookableRendererInterface
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+interface Supportable_Hookable_Renderer_Interface extends Hookable_Renderer_Interface
 {
-    public function supports(AbstractHookable $hookable): bool;
+    public function supports(Abstract_Hookable $hookable): bool;
 }

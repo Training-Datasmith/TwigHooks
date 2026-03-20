@@ -8,32 +8,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Normalizer\Prefix;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Normalizer\Prefix;
-
-final class CompositePrefixNormalizer implements PrefixNormalizerInterface
+final class Composite_Prefix_Normalizer implements Prefix_Normalizer_Interface
 {
     /** @var array<PrefixNormalizerInterface> */
-    private readonly array $prefixNormalizers;
-
+    private readonly array $prefix_normalizers;
     /**
      * @param iterable<PrefixNormalizerInterface> $prefixNormalizers
      */
-    public function __construct(iterable $prefixNormalizers)
+    public function __construct(iterable $prefix_normalizers)
     {
-        $this->prefixNormalizers = $prefixNormalizers instanceof \Traversable ? iterator_to_array($prefixNormalizers) : $prefixNormalizers;
+        $this->prefix_normalizers = $prefix_normalizers instanceof \Traversable ? iterator_to_array($prefix_normalizers) : $prefix_normalizers;
     }
-
     public function normalize(string $prefix): string
     {
-        $normalizedPrefix = $prefix;
-
-        foreach ($this->prefixNormalizers as $prefixNormalizer) {
-            $normalizedPrefix = $prefixNormalizer->normalize($normalizedPrefix);
+        $normalized_prefix = $prefix;
+        foreach ($this->prefix_normalizers as $prefix_normalizer) {
+            $normalized_prefix = $prefix_normalizer->normalize($normalized_prefix);
         }
-
-        return $normalizedPrefix;
+        return $normalized_prefix;
     }
 }

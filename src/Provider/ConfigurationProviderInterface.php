@@ -8,17 +8,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Provider;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Provider;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-
-interface ConfigurationProviderInterface
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+interface Configuration_Provider_Interface
 {
     /**
      * @return array<string, mixed>
      */
-    public function provide(AbstractHookable $hookable): array;
+    public function provide(Abstract_Hookable $hookable): array;
 }

@@ -8,112 +8,86 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Registry;
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Registry;
 
 use Laminas\Stdlib\SplPriorityQueue;
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-use Sylius\TwigHooks\Hookable\DisabledHookable;
-use Sylius\TwigHooks\Hookable\Merger\HookableMergerInterface;
-
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+use Sylius\Twig_Hooks\Hookable\Disabled_Hookable;
+use Sylius\Twig_Hooks\Hookable\Merger\Hookable_Merger_Interface;
 /** @internal */
-class HookablesRegistry
+class Hookables_Registry
 {
     /** @var array<string, array<AbstractHookable>> */
     private array $hookables = [];
-
     /**
      * @param iterable<AbstractHookable> $hookables
      */
-    public function __construct(
-        iterable $hookables,
-        private readonly HookableMergerInterface $hookableMerger,
-    ) {
+    public function __construct(iterable $hookables, private readonly Hookable_Merger_Interface $hookable_merger)
+    {
         /** @var AbstractHookable $hookable */
         foreach ($hookables as $hookable) {
-            if (!$hookable instanceof AbstractHookable) {
-                throw new \InvalidArgumentException(
-                    sprintf('All elements must be an instance of "%s".', AbstractHookable::class),
-                );
+            if (!$hookable instanceof Abstract_Hookable) {
+                throw new \InvalidArgumentException(sprintf('All elements must be an instance of "%s".', Abstract_Hookable::class));
             }
-
-            $this->hookables[$hookable->hookName][$hookable->name] = $hookable;
+            $this->hookables[$hookable->hook_name][$hookable->name] = $hookable;
         }
     }
-
     /**
      * @return array<string>
      */
-    public function getHookNames(): array
+    public function get_hook_names(): array
     {
         return array_keys($this->hookables);
     }
-
     /**
      * @param string|array<string> $hooksNames
      *
      * @return array<AbstractHookable>
      */
-    public function getEnabledFor(string|array $hooksNames): array
+    public function get_enabled_for(string|array $hooks_names): array
     {
-        $hooksNames = is_string($hooksNames) ? [$hooksNames] : $hooksNames;
-        $hookables = array_values(
-            array_filter(
-                $this->mergeHookables($hooksNames),
-                static fn (AbstractHookable $hookable): bool => !$hookable instanceof DisabledHookable,
-            ),
-        );
-
-        $priorityQueue = new SplPriorityQueue();
+        $hooks_names = is_string($hooks_names) ? [$hooks_names] : $hooks_names;
+        $hookables = array_values(array_filter($this->merge_hookables($hooks_names), static fn(Abstract_Hookable $hookable): bool => !$hookable instanceof Disabled_Hookable));
+        $priority_queue = new SplPriorityQueue();
         foreach ($hookables as $hookable) {
-            $priorityQueue->insert($hookable, $hookable->priority());
+            $priority_queue->insert($hookable, $hookable->priority());
         }
-
-        return $priorityQueue->toArray();
+        return $priority_queue->to_array();
     }
-
     /**
      * @param string|array<string> $hooksNames
      *
      * @return array<AbstractHookable>
      */
-    public function getFor(string|array $hooksNames): array
+    public function get_for(string|array $hooks_names): array
     {
-        $hooksNames = is_string($hooksNames) ? [$hooksNames] : $hooksNames;
-        $hookables = $this->mergeHookables($hooksNames);
-
-        $priorityQueue = new SplPriorityQueue();
+        $hooks_names = is_string($hooks_names) ? [$hooks_names] : $hooks_names;
+        $hookables = $this->merge_hookables($hooks_names);
+        $priority_queue = new SplPriorityQueue();
         foreach ($hookables as $hookable) {
-            $priorityQueue->insert($hookable, $hookable->priority());
+            $priority_queue->insert($hookable, $hookable->priority());
         }
-
-        return $priorityQueue->toArray();
+        return $priority_queue->to_array();
     }
-
     /**
      * @param array<string> $hooksNames
      *
      * @return array<AbstractHookable>
      */
-    private function mergeHookables(array $hooksNames): array
+    private function merge_hookables(array $hooks_names): array
     {
         /** @var array<AbstractHookable> $mergedHookables */
-        $mergedHookables = [];
-
-        foreach (array_reverse($hooksNames) as $hookName) {
-            $hookables = $this->hookables[$hookName] ?? [];
-
-            foreach ($hookables as $hookableName => $hookable) {
-                if (array_key_exists($hookableName, $mergedHookables)) {
-                    $hookable = $this->hookableMerger->merge($mergedHookables[$hookableName], $hookable);
+        $merged_hookables = [];
+        foreach (array_reverse($hooks_names) as $hook_name) {
+            $hookables = $this->hookables[$hook_name] ?? [];
+            foreach ($hookables as $hookable_name => $hookable) {
+                if (array_key_exists($hookable_name, $merged_hookables)) {
+                    $hookable = $this->hookable_merger->merge($merged_hookables[$hookable_name], $hookable);
                 }
-
-                $mergedHookables[$hookableName] = $hookable;
+                $merged_hookables[$hookable_name] = $hookable;
             }
         }
-
-        return array_values($mergedHookables);
+        return array_values($merged_hookables);
     }
 }

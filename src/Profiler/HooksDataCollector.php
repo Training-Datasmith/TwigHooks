@@ -8,61 +8,48 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Profiler;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Profiler;
-
-use Sylius\TwigHooks\Profiler\Dumper\HtmlDumper;
-use Symfony\Component\HttpKernel\DataCollector\DataCollector;
-use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
+use Sylius\Twig_Hooks\Profiler\Dumper\Html_Dumper;
+use Symfony\Component\Http_Kernel\Data_Collector\Data_Collector;
+use Symfony\Component\Http_Kernel\Data_Collector\Late_Data_Collector_Interface;
 use Twig\Markup;
-
 /** @internal */
-final class HooksDataCollector extends DataCollector implements LateDataCollectorInterface
+final class Hooks_Data_Collector extends Data_Collector implements Late_Data_Collector_Interface
 {
-    public function __construct(
-        private Profile $profile,
-    ) {
+    public function __construct(private Profile $profile)
+    {
     }
-
-    public function getName(): string
+    public function get_name(): string
     {
         return 'sylius_twig_hooks';
     }
-
-    public function lateCollect(): void
+    public function late_collect(): void
     {
         $this->data = ['profile' => serialize($this->profile)];
     }
-
-    private function getProfile(): Profile
+    private function get_profile(): Profile
     {
         return $this->profile ??= unserialize($this->data['profile'], ['allowed_classes' => [Profile::class]]);
     }
-
-    public function getTotalDuration(): string
+    public function get_total_duration(): string
     {
-        return sprintf('%.1f', $this->getProfile()->getTotalDuration());
+        return sprintf('%.1f', $this->get_profile()->get_total_duration());
     }
-
-    public function getNumberOfHooks(): int
+    public function get_number_of_hooks(): int
     {
-        return $this->getProfile()->getNumberOfHooks();
+        return $this->get_profile()->get_number_of_hooks();
     }
-
-    public function getNumberOfHookables(): int
+    public function get_number_of_hookables(): int
     {
-        return $this->getProfile()->getNumberOfHookables();
+        return $this->get_profile()->get_number_of_hookables();
     }
-
-    public function getCallGraph(): Markup
+    public function get_call_graph(): Markup
     {
-        $dump = (new HtmlDumper())->dump($this->getProfile());
-
+        $dump = (new Html_Dumper())->dump($this->get_profile());
         return new Markup($dump, 'UTF-8');
     }
-
     public function reset(): void
     {
         $this->profile->reset();

@@ -8,61 +8,40 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hookable\Renderer;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hookable\Renderer;
-
-use Sylius\TwigHooks\Bag\ScalarDataBag;
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-use Sylius\TwigHooks\Hookable\HookableTemplate;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-use Sylius\TwigHooks\Hookable\Renderer\Exception\HookRenderException;
-use Sylius\TwigHooks\Provider\TemplateConfigurationProviderInterface;
-use Sylius\TwigHooks\Twig\Runtime\HooksRuntime;
+use Sylius\Twig_Hooks\Bag\Scalar_Data_Bag;
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+use Sylius\Twig_Hooks\Hookable\Hookable_Template;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+use Sylius\Twig_Hooks\Hookable\Renderer\Exception\Hook_Render_Exception;
+use Sylius\Twig_Hooks\Provider\Template_Configuration_Provider_Interface;
+use Sylius\Twig_Hooks\Twig\Runtime\Hooks_Runtime;
 use Twig\Environment as Twig;
-
-final class HookableTemplateRenderer implements SupportableHookableRendererInterface
+final class Hookable_Template_Renderer implements Supportable_Hookable_Renderer_Interface
 {
-    public function __construct(
-        private readonly Twig $twig,
-        private readonly TemplateConfigurationProviderInterface $configurationProvider,
-    ) {
+    public function __construct(private readonly Twig $twig, private readonly Template_Configuration_Provider_Interface $configuration_provider)
+    {
     }
-
     /**
      * @param HookableTemplate $hookable
      */
-    public function render(AbstractHookable $hookable, HookableMetadata $metadata): string
+    public function render(Abstract_Hookable $hookable, Hookable_Metadata $metadata): string
     {
         if (!$this->supports($hookable)) {
-            throw new \InvalidArgumentException(
-                sprintf('Hookable must be the "%s", but "%s" given.', HookableTemplate::class, $hookable::class),
-            );
+            throw new \InvalidArgumentException(sprintf('Hookable must be the "%s", but "%s" given.', Hookable_Template::class, $hookable::class));
         }
-
         try {
-            $configuration = $this->configurationProvider->provide($hookable, $metadata);
-            $metadata = $metadata->withConfiguration(new ScalarDataBag($configuration));
-
-            return $this->twig->render($hookable->template, [
-                HooksRuntime::HOOKABLE_METADATA => $metadata,
-            ]);
+            $configuration = $this->configuration_provider->provide($hookable, $metadata);
+            $metadata = $metadata->with_configuration(new Scalar_Data_Bag($configuration));
+            return $this->twig->render($hookable->template, [Hooks_Runtime::HOOKABLE_METADATA => $metadata]);
         } catch (\Throwable $exception) {
-            throw new HookRenderException(
-                sprintf(
-                    'An error occurred during rendering the "%s" hook in the "%s" hookable. %s',
-                    $hookable->name,
-                    $hookable->hookName,
-                    $exception->getMessage(),
-                ),
-                previous: $exception,
-            );
+            throw new Hook_Render_Exception(sprintf('An error occurred during rendering the "%s" hook in the "%s" hookable. %s', $hookable->name, $hookable->hook_name, $exception->get_message()), previous: $exception);
         }
     }
-
-    public function supports(AbstractHookable $hookable): bool
+    public function supports(Abstract_Hookable $hookable): bool
     {
-        return is_a($hookable, HookableTemplate::class, true);
+        return is_a($hookable, Hookable_Template::class, true);
     }
 }

@@ -8,36 +8,25 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Twig;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Twig;
-
-use Sylius\TwigHooks\Twig\Runtime\HooksRuntime;
-use Sylius\TwigHooks\Twig\TokenParser\HookTokenParser;
-use Twig\Extension\AbstractExtension;
-use Twig\TokenParser\TokenParserInterface;
-use Twig\TwigFunction;
-
-final class HooksExtension extends AbstractExtension
+use Sylius\Twig_Hooks\Twig\Runtime\Hooks_Runtime;
+use Sylius\Twig_Hooks\Twig\Token_Parser\Hook_Token_Parser;
+use Twig\Extension\Abstract_Extension;
+use Twig\Token_Parser\Token_Parser_Interface;
+use Twig\Twig_Function;
+final class Hooks_Extension extends Abstract_Extension
 {
-    public function getFunctions(): array
+    public function get_functions(): array
     {
-        return [
-            new TwigFunction('get_hookable_metadata', [HooksRuntime::class, 'getHookableMetadata'], ['needs_context' => true]),
-            new TwigFunction('get_hookable_context', [HooksRuntime::class, 'getHookableContext'], ['needs_context' => true]),
-            new TwigFunction('get_hookable_configuration', [HooksRuntime::class, 'getHookableConfiguration'], ['needs_context' => true]),
-            new TwigFunction('is_hookable', [HooksRuntime::class, 'isHookable'], ['needs_context' => true]),
-        ];
+        return [new Twig_Function('get_hookable_metadata', [Hooks_Runtime::class, 'getHookableMetadata'], ['needs_context' => true]), new Twig_Function('get_hookable_context', [Hooks_Runtime::class, 'getHookableContext'], ['needs_context' => true]), new Twig_Function('get_hookable_configuration', [Hooks_Runtime::class, 'getHookableConfiguration'], ['needs_context' => true]), new Twig_Function('is_hookable', [Hooks_Runtime::class, 'isHookable'], ['needs_context' => true])];
     }
-
     /**
      * @return array<TokenParserInterface>
      */
-    public function getTokenParsers(): array
+    public function get_token_parsers(): array
     {
-        return [
-            new HookTokenParser(),
-        ];
+        return [new Hook_Token_Parser()];
     }
 }

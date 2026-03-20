@@ -8,12 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Normalizer\Name;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Normalizer\Name;
-
-interface NameNormalizerInterface
+interface Name_Normalizer_Interface
 {
     public function normalize(string $name): string;
 }

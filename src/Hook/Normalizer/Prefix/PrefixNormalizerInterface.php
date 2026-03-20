@@ -8,12 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Normalizer\Prefix;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Normalizer\Prefix;
-
-interface PrefixNormalizerInterface
+interface Prefix_Normalizer_Interface
 {
     public function normalize(string $prefix): string;
 }

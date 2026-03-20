@@ -8,15 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hookable\Renderer;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hookable\Renderer;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadata;
-
-interface HookableRendererInterface
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata;
+interface Hookable_Renderer_Interface
 {
-    public function render(AbstractHookable $hookable, HookableMetadata $metadata): string;
+    public function render(Abstract_Hookable $hookable, Hookable_Metadata $metadata): string;
 }

@@ -8,56 +8,44 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Profiler;
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Profiler;
 
 /** @internal */
-class HookProfile
+class Hook_Profile
 {
     private int|float|null $duration = null;
-
     /**
      * @param array<string> $hooksNames
      * @param array<HookableProfile> $hookablesProfiles
      */
-    public function __construct(
-        private readonly array $hooksNames,
-        private array $hookablesProfiles,
-        private readonly ?self $parent = null,
-    ) {
+    public function __construct(private readonly array $hooks_names, private array $hookables_profiles, private readonly ?self $parent = null)
+    {
     }
-
-    public function getParent(): ?self
+    public function get_parent(): ?self
     {
         return $this->parent;
     }
-
-    public function getName(): string
+    public function get_name(): string
     {
-        return implode(', ', $this->hooksNames);
+        return implode(', ', $this->hooks_names);
     }
-
-    public function addHookableProfile(HookableProfile $hookableProfile): void
+    public function add_hookable_profile(Hookable_Profile $hookable_profile): void
     {
-        $this->hookablesProfiles[] = $hookableProfile;
+        $this->hookables_profiles[] = $hookable_profile;
     }
-
     /**
      * @return array<HookableProfile>
      */
-    public function getHookablesProfiles(): array
+    public function get_hookables_profiles(): array
     {
-        return $this->hookablesProfiles;
+        return $this->hookables_profiles;
     }
-
-    public function setDuration(int|float $duration): void
+    public function set_duration(int|float $duration): void
     {
         $this->duration = $duration;
     }
-
-    public function getDuration(): int|float|null
+    public function get_duration(): int|float|null
     {
         return $this->duration;
     }

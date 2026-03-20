@@ -8,14 +8,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Bag;
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Bag;
 
 /**
  * @extends \ArrayAccess<string, scalar>
  */
-interface ScalarDataBagInterface extends \ArrayAccess
+interface Scalar_Data_Bag_Interface extends \ArrayAccess
 {
 }

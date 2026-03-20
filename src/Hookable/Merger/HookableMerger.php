@@ -8,38 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hookable\Merger;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hookable\Merger;
-
-use Sylius\TwigHooks\Hookable\AbstractHookable;
-
-final class HookableMerger implements HookableMergerInterface
+use Sylius\Twig_Hooks\Hookable\Abstract_Hookable;
+final class Hookable_Merger implements Hookable_Merger_Interface
 {
     /**
      * @throws \ReflectionException
      */
-    public function merge(AbstractHookable ...$hookables): AbstractHookable
+    public function merge(Abstract_Hookable ...$hookables): Abstract_Hookable
     {
         if ([] === $hookables) {
             throw new \InvalidArgumentException('At least one hookable must be passed to merge.');
         }
-
         /** @var class-string<AbstractHookable> $class */
         $class = end($hookables)::class;
-
-        $serializedHookables = array_map(
-            static fn (AbstractHookable $hookable): array => $hookable->toArray(),
-            $hookables,
-        );
-
-        $inputs = array_merge(...$serializedHookables);
-        $arguments = $this->createConstructorArguments($class, $inputs);
-
+        $serialized_hookables = array_map(static fn(Abstract_Hookable $hookable): array => $hookable->to_array(), $hookables);
+        $inputs = array_merge(...$serialized_hookables);
+        $arguments = $this->create_constructor_arguments($class, $inputs);
         return new $class(...$arguments);
     }
-
     /**
      * @param class-string $class
      * @param array<string, mixed> $inputs
@@ -48,26 +37,19 @@ final class HookableMerger implements HookableMergerInterface
      *
      * @throws \ReflectionException
      */
-    private function createConstructorArguments(string $class, array $inputs): array
+    private function create_constructor_arguments(string $class, array $inputs): array
     {
         $reflection = new \ReflectionClass($class);
         /** @var \ReflectionMethod $constructor */
-        $constructor = $reflection->getConstructor();
-        $parameters = array_map(
-            static fn (\ReflectionParameter $parameter): string => $parameter->getName(),
-            $constructor->getParameters(),
-        );
-
+        $constructor = $reflection->get_constructor();
+        $parameters = array_map(static fn(\ReflectionParameter $parameter): string => $parameter->get_name(), $constructor->get_parameters());
         $arguments = [];
-
-        foreach ($inputs as $inputName => $input) {
-            if (!in_array($inputName, $parameters, true)) {
+        foreach ($inputs as $input_name => $input) {
+            if (!in_array($input_name, $parameters, true)) {
                 continue;
             }
-
-            $arguments[$inputName] = $input;
+            $arguments[$input_name] = $input;
         }
-
         return $arguments;
     }
 }

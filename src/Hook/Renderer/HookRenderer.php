@@ -8,56 +8,37 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+declare (strict_types=1);
+namespace Sylius\Twig_Hooks\Hook\Renderer;
 
-declare(strict_types=1);
-
-namespace Sylius\TwigHooks\Hook\Renderer;
-
-use Sylius\TwigHooks\Bag\DataBag;
-use Sylius\TwigHooks\Bag\ScalarDataBag;
-use Sylius\TwigHooks\Hook\Metadata\HookMetadata;
-use Sylius\TwigHooks\Hookable\Metadata\HookableMetadataFactoryInterface;
-use Sylius\TwigHooks\Hookable\Renderer\HookableRendererInterface;
-use Sylius\TwigHooks\Provider\ConfigurationProviderInterface;
-use Sylius\TwigHooks\Provider\ContextProviderInterface;
-use Sylius\TwigHooks\Registry\HookablesRegistry;
-
-final class HookRenderer implements HookRendererInterface
+use Sylius\Twig_Hooks\Bag\Data_Bag;
+use Sylius\Twig_Hooks\Bag\Scalar_Data_Bag;
+use Sylius\Twig_Hooks\Hook\Metadata\Hook_Metadata;
+use Sylius\Twig_Hooks\Hookable\Metadata\Hookable_Metadata_Factory_Interface;
+use Sylius\Twig_Hooks\Hookable\Renderer\Hookable_Renderer_Interface;
+use Sylius\Twig_Hooks\Provider\Configuration_Provider_Interface;
+use Sylius\Twig_Hooks\Provider\Context_Provider_Interface;
+use Sylius\Twig_Hooks\Registry\Hookables_Registry;
+final class Hook_Renderer implements Hook_Renderer_Interface
 {
-    public function __construct(
-        private readonly HookablesRegistry $hookablesRegistry,
-        private readonly HookableRendererInterface $compositeHookableRenderer,
-        private readonly ContextProviderInterface $contextProvider,
-        private readonly ConfigurationProviderInterface $configurationProvider,
-        private readonly HookableMetadataFactoryInterface $hookableMetadataFactory,
-    ) {
+    public function __construct(private readonly Hookables_Registry $hookables_registry, private readonly Hookable_Renderer_Interface $composite_hookable_renderer, private readonly Context_Provider_Interface $context_provider, private readonly Configuration_Provider_Interface $configuration_provider, private readonly Hookable_Metadata_Factory_Interface $hookable_metadata_factory)
+    {
     }
-
     /**
      * @param array<string> $hookNames
      * @param array<string, mixed> $hookContext
      */
-    public function render(array $hookNames, array $hookContext = []): string
+    public function render(array $hook_names, array $hook_context = []): string
     {
-        $hookables = $this->hookablesRegistry->getEnabledFor($hookNames);
-        $renderedHookables = [];
-
+        $hookables = $this->hookables_registry->get_enabled_for($hook_names);
+        $rendered_hookables = [];
         foreach ($hookables as $hookable) {
-            $hookMetadata = new HookMetadata($hookable->hookName, new DataBag($hookContext));
-
-            $context = $this->contextProvider->provide($hookable, $hookContext);
-            $configuration = $this->configurationProvider->provide($hookable);
-
-            $hookableMetadata = $this->hookableMetadataFactory->create(
-                $hookMetadata,
-                new DataBag($context),
-                new ScalarDataBag($configuration),
-                $hookNames,
-            );
-
-            $renderedHookables[] = $this->compositeHookableRenderer->render($hookable, $hookableMetadata);
+            $hook_metadata = new Hook_Metadata($hookable->hook_name, new Data_Bag($hook_context));
+            $context = $this->context_provider->provide($hookable, $hook_context);
+            $configuration = $this->configuration_provider->provide($hookable);
+            $hookable_metadata = $this->hookable_metadata_factory->create($hook_metadata, new Data_Bag($context), new Scalar_Data_Bag($configuration), $hook_names);
+            $rendered_hookables[] = $this->composite_hookable_renderer->render($hookable, $hookable_metadata);
         }
-
-        return implode(\PHP_EOL, $renderedHookables);
+        return implode(\PHP_EOL, $rendered_hookables);
     }
 }
